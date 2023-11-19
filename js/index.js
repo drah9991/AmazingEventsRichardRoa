@@ -189,8 +189,8 @@ tarjetas(data.events, carrusel)
 
 function tarjetas(arregloEventos, divp) {
     for (let i = 0; i < arregloEventos.length; i += 4) {
-        let carruselItem;
-        if (i === 0) {
+        let carruselItem
+        if (i < 4) {
             carruselItem = document.createElement("div")
             carruselItem.classList.add("carousel-item", "active")
         } else {
