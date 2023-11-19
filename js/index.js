@@ -185,7 +185,51 @@ const data = {
     ],
 };
 let carrusel = document.getElementById("carrusel-principal")
+
+// Llamada a la función
 tarjetas(data.events, carrusel)
+let pruebafuturo = filtroEventsporFecha(data.events, data.currentDate, true)
+console.log(pruebafuturo);
+let pruebapasado = filtroEventsporFecha(data.events, data.currentDate, false)
+console.log(pruebapasado);
+
+// let pastEvents = filtroPast(data.events, data.currentDate)
+// let upcoEvents = filtroUpc(data.events, data.currentDate)
+function filtroEventsporFecha(arreglo, fecha, futuro) {
+    let newArray = []
+    for (let i = 0; i < arreglo.length; i++) {
+        if (futuro == true) {
+            if (arreglo[i].date > fecha) {
+                newArray.push(arreglo[i])
+            }
+        } else {
+            if (arreglo[i].date < fecha) {
+                newArray.push(arreglo[i])
+            }
+        }
+    }
+    return newArray
+}
+/*
+function filtroPast(arreglo, fecha) {
+    let newArray = []
+    for (let i = 0; i < arreglo.length; i++) {
+        if (arreglo[i].date < fecha) {
+            newArray.push(arreglo[i])
+        }
+    }
+    return newArray
+}*/
+/*
+function filtroUpc(arreglo, fecha) {
+    let newArray = []
+    for (let i = 0; i < arreglo.length; i++) {
+        if (arreglo[i].date > fecha) {
+            newArray.push(arreglo[i])
+        }
+    }
+    return newArray
+}*/
 
 function tarjetas(arregloEventos, divp) {
     for (let i = 0; i < arregloEventos.length; i += 4) {
@@ -206,15 +250,19 @@ function tarjetas(arregloEventos, divp) {
                 let card = document.createElement("div")
                 card.classList.add("card", "tamanoCard")
                 card.innerHTML = `
-                    <img src="${arregloEventos[j].image}" class="card-img-top" alt="...">
+                    <img src="${arregloEventos[j].image}" class="card-img-top w-100 h-100" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">${arregloEventos[j].name}</h5>
+                        date
                         <p class="card-text">${arregloEventos[j].description}</p>
                     </div>
                     <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Date: ${arregloEventos[j].date}</li>
+                        <li class="list-group-item">Place: ${arregloEventos[j].place} </li>
                         <li class="list-group-item">Category: ${arregloEventos[j].category} </li>
                         <li class="list-group-item">Price: ${arregloEventos[j].price}</li>
                         <li class="list-group-item">Capacity: ${arregloEventos[j].capacity}</li>
+                        <li class="list-group-item">Assistance: ${arregloEventos[j].assistance}</li>
                     </ul>
                     <div class="card-body">
                         <a href="#" class="card-link">Card link</a>
@@ -229,6 +277,3 @@ function tarjetas(arregloEventos, divp) {
         divp.appendChild(carruselItem);
     }
 }
-
-// Llamada a la función
-tarjetas(data.events, carrusel);
