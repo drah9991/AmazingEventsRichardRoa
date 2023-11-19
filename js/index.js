@@ -195,21 +195,7 @@ console.log(pruebapasado);
 
 // let pastEvents = filtroPast(data.events, data.currentDate)
 // let upcoEvents = filtroUpc(data.events, data.currentDate)
-function filtroEventsporFecha(arreglo, fecha, futuro) {
-    let newArray = []
-    for (let i = 0; i < arreglo.length; i++) {
-        if (futuro == true) {
-            if (arreglo[i].date > fecha) {
-                newArray.push(arreglo[i])
-            }
-        } else {
-            if (arreglo[i].date < fecha) {
-                newArray.push(arreglo[i])
-            }
-        }
-    }
-    return newArray
-}
+
 /*
 function filtroPast(arreglo, fecha) {
     let newArray = []
