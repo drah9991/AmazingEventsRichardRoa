@@ -184,104 +184,17 @@ const data = {
         },
     ],
 };
-let carrusel = document.getElementById("carrusel-principal")
 
-// Llamada a la función
+let urlString = window.location.href
 
-let past = filtroEventsporFecha(data.events, data.currentDate, false)
-console.log(past);
-tarjetas(past, carrusel)
+let urlArmada = new URL(urlString)
 
-let contenedorCheckbox = document.getElementById("contenedorCheckbox")
+let parametros = new URLSearchParams(urlArmada.search)
+let id = parametros.get("id")
 
-let arrayCategory = Array.from(new Set(data.events.map(event => event.category)))
-pintarCheckbox(arrayCategory, contenedorCheckbox)
-
-function filtroEventsporFecha(arreglo, fecha, futuro) {
-    let newArray = []
-    for (let i = 0; i < arreglo.length; i++) {
-        if (futuro == true) {
-            if (arreglo[i].date > fecha) {
-                newArray.push(arreglo[i])
-            }
-        } else {
-            if (arreglo[i].date < fecha) {
-                newArray.push(arreglo[i])
-            }
-        }
-    }
-    return newArray
-}
-
-function tarjetas(arregloEventos, divp) {
-    for (let i = 0; i < arregloEventos.length; i += 4) {
-        let carruselItem
-        if (i < 4) {
-            carruselItem = document.createElement("div")
-            carruselItem.classList.add("carousel-item", "active")
-        } else {
-            carruselItem = document.createElement("div")
-            carruselItem.classList.add("carousel-item")
-        }
-
-        let contenedor = document.createElement("div")
-        contenedor.classList.add("d-flex", "justify-content-around")
-
-        for (let j = i; j < i + 4; j++) {
-            if (arregloEventos[j] != undefined) {
-                let card = document.createElement("div")
-                card.classList.add("card", "tamanoCard")
-                card.innerHTML = `
-                <img src="${arregloEventos[j].image}" class="card-img-top w-100 h-100" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">${arregloEventos[j].name}</h5>
-                    date
-                    <p class="card-text">${arregloEventos[j].description}</p>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Date: ${arregloEventos[j].date}</li>
-                    <li class="list-group-item">Place: ${arregloEventos[j].place} </li>
-                    <li class="list-group-item">Category: ${arregloEventos[j].category} </li>
-                    <li class="list-group-item">Price: ${arregloEventos[j].price}</li>
-                </ul>
-                <div class="card-body">
-                    <a href="details.html?id=${arregloEventos[j]._id}" class="card-link">Details</a>
-                </div>`;
-                contenedor.appendChild(card);
-            }
-        }
-
-        carruselItem.appendChild(contenedor);
-        divp.appendChild(carruselItem);
-    }
-}
-
-function pintarCheckbox(arregloCategory, divC) {
-
-    for (let j = 0; j < arregloCategory.length; j++) {
-        if (arrayCategory[j] != undefined) {
-            let checkbox = document.createElement("div")
-            checkbox.classList.add("form-check", "form-check-inline")
-            checkbox.innerHTML = `
-            <input class="form-check-input" type="checkbox" value="${arregloCategory[j]}" id="${arregloCategory[j]}">
-            <label class="form-check-label" for="${arregloCategory[j]}">${arregloCategory[j]}</label>`;
-            divC.appendChild(checkbox);
-        }
-    }
-
-}
-
-function filtrarPorCheckbox(arreglo, arregloChecked) {
-    tarjetas.innerHTML = '';
-    let arregloFinal = arreglo.filter(event => arregloChecked.includes(event.category.toLowerCase()))
-    console.log(arregloFinal);
-    return arregloFinal
-}
-
-
-//filtro buscar
-function filtrarPorPalabra(arregloEventos, palabraClave) {
-    tarjetas.innerHTML = '';
-    let arregloFiltrado = arregloEventos.filter(evento => evento.name.toLowerCase().includes(palabraClave.toLowerCase()) || evento.description.toLowerCase().includes(palabraClave.toLowerCase()))
-    return arregloFiltrado
-}
+let dataFilter = data.events.filter((evento) => evento._id == id)
+console.log(dataFilter)
+document.getElementById("titulo").innerHTML = dataFilter[0].name
+document.getElementById("descripcion").innerHTML = dataFilter[0].description
+document.getElementById("imagen").src = dataFilter[0].image
+document.getElementById("precio").innerHTML = "Precio= " + dataFilter[0].price
