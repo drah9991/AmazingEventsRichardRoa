@@ -260,7 +260,7 @@ function tarjetas(arregloEventos, divp) {
 }
 
 function pintarCheckbox(arregloCategory, divC) {
-    tarjetas.innerHTML = '';
+tarjetas.innerHTML = '';
     for (let j = 0; j < arregloCategory.length; j++) {
         if (arrayCategory[j] != undefined) {
             let checkbox = document.createElement("div")
@@ -275,9 +275,7 @@ function pintarCheckbox(arregloCategory, divC) {
 }
 
 function filtrarPorCheckbox(arreglo, arregloChecked) {
-    tarjetas.innerHTML = '';
     let arregloFinal = arreglo.filter(event => arregloChecked.includes(event.category.toLowerCase()))
-    console.log(arregloFinal);
     return arregloFinal
 }
 
