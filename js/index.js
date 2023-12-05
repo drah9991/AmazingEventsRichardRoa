@@ -198,15 +198,30 @@ pintarCheckbox(arrayCategory, contenedorCheckbox)
 
 contenedorCheckbox.addEventListener("change", e => {
     let checked = Array.from(document.querySelectorAll("input[type=checkbox]:checked")).map(checkbox => checkbox.value.toLowerCase())
-    let nuevoArreglo = filtrarPorCheckbox(data.events, checked)
-    tarjetas(nuevoArreglo, carrusel)
+    if (checked.length > 0) {
+        let nuevoArreglo = filtrarPorCheckbox(data.events, checked);
+        tarjetas(nuevoArreglo, carrusel)
+    } else {
+        // Si no hay checkbox seleccionados, muestra todos los eventos
+        tarjetas(data.events, carrusel)
+    }
 })
 
 let buscador = document.getElementById("inputBusqueda");
 buscador.addEventListener("keyup", e => {
-    let nuevoArreglo1 = filtrarPorPalabra(data.events, e.target.value)
-    tarjetas(nuevoArreglo1, carrusel)
-})
+    let checked = Array.from(document.querySelectorAll("input[type=checkbox]:checked")).map(checkbox => checkbox.value.toLowerCase());
+
+    if (e.target.value.trim() === "") {
+        // Filtra solo por checkbox
+        let nuevoArreglo1 = filtrarPorCheckbox(data.events, checked);
+        tarjetas(nuevoArreglo1, carrusel);
+    } else {
+        // Filtra por palabra y checkbox
+        let nuevoArreglo1 = filtrarPorPalabra(data.events, e.target.value);
+        nuevoArreglo1 = filtrarPorCheckbox(nuevoArreglo1, checked);
+        tarjetas(nuevoArreglo1, carrusel);
+    }
+});
 
 
 //corregir variables
@@ -215,7 +230,7 @@ function tarjetas(arregloEventos, divp) {
     divp.innerHTML = ""
     if (arregloEventos == 0) {
         divp.innerHTML = '<div class="col-12 min-vh-50"><h2 class="text-center text-secondary my-5">No hay elementos para mostrar</h2></div>'
-    } else {
+    } 
         for (let i = 0; i < arregloEventos.length; i += 4) {
             let carruselItem
             if (i < 4) {
@@ -256,7 +271,7 @@ function tarjetas(arregloEventos, divp) {
             carruselItem.appendChild(contenedor);
             divp.appendChild(carruselItem);
         }
-    }
+    
 }
 
 function pintarCheckbox(arregloCategory, divC) {
