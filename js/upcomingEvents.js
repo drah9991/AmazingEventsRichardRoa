@@ -189,9 +189,25 @@ let carrusel = document.getElementById("carrusel-principal")
 // Llamada a la función
 
 let future = filtroEventsporFecha(data.events, data.currentDate, true)
-console.log(future);
 tarjetas(future, carrusel)
 
+let contenedorCheckbox = document.getElementById("contenedorCheckbox")
+
+let arrayCategory = Array.from(new Set(data.events.map(event => event.category)))
+pintarCheckbox(arrayCategory, contenedorCheckbox)
+
+
+contenedorCheckbox.addEventListener("change", e => {
+    let checked = Array.from(document.querySelectorAll("input[type=checkbox]:checked")).map(checkbox => checkbox.value.toLowerCase())
+    let nuevoArreglo = filtrarPorCheckbox(data.events, checked)
+    tarjetas(nuevoArreglo, carrusel)
+})
+
+let buscador = document.getElementById("inputBusqueda");
+buscador.addEventListener("keyup", e => {
+    let nuevoArreglo1 = filtrarPorPalabra(data.events, e.target.value)
+    tarjetas(nuevoArreglo1, carrusel)
+})
 // let pastEvents = filtroPast(data.events, data.currentDate)
 // let upcoEvents = filtroUpc(data.events, data.currentDate)
 function filtroEventsporFecha(arreglo, fecha, futuro) {
@@ -229,25 +245,21 @@ function tarjetas(arregloEventos, divp) {
                 let card = document.createElement("div")
                 card.classList.add("card", "tamanoCard")
                 card.innerHTML = `
-                    <img src="${arregloEventos[j].image}" class="card-img-top w-100 h-100" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">${arregloEventos[j].name}</h5>
-                        date
-                        <p class="card-text">${arregloEventos[j].description}</p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Date: ${arregloEventos[j].date}</li>
-                        <li class="list-group-item">Place: ${arregloEventos[j].place} </li>
-                        <li class="list-group-item">Category: ${arregloEventos[j].category} </li>
-                        <li class="list-group-item">Price: ${arregloEventos[j].price}</li>
-                        <li class="list-group-item">Capacity: ${arregloEventos[j].capacity}</li>
-                        <li class="list-group-item">Assistance: ${arregloEventos[j].assistance}</li>
-                    </ul>
-                    <div class="card-body">
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
-                    </div>`;
-
+                <img src="${arregloEventos[j].image}" class="card-img-top w-100 h-100" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">${arregloEventos[j].name}</h5>
+                    date
+                    <p class="card-text">${arregloEventos[j].description}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Date: ${arregloEventos[j].date}</li>
+                    <li class="list-group-item">Place: ${arregloEventos[j].place} </li>
+                    <li class="list-group-item">Category: ${arregloEventos[j].category} </li>
+                    <li class="list-group-item">Price: ${arregloEventos[j].price}</li>
+                </ul>
+                <div class="card-body">
+                    <a href="details.html?id=${arregloEventos[j]._id}" class="card-link">Details</a>
+                </div>`;
                 contenedor.appendChild(card);
             }
         }
@@ -255,4 +267,34 @@ function tarjetas(arregloEventos, divp) {
         carruselItem.appendChild(contenedor);
         divp.appendChild(carruselItem);
     }
+}
+
+function pintarCheckbox(arregloCategory, divC) {
+
+    for (let j = 0; j < arregloCategory.length; j++) {
+        if (arrayCategory[j] != undefined) {
+            let checkbox = document.createElement("div")
+            checkbox.classList.add("form-check", "form-check-inline")
+            checkbox.innerHTML = `
+            <input class="form-check-input" type="checkbox" value="${arregloCategory[j]}" id="${arregloCategory[j]}">
+            <label class="form-check-label" for="${arregloCategory[j]}">${arregloCategory[j]}</label>`;
+            divC.appendChild(checkbox);
+        }
+    }
+
+}
+
+function filtrarPorCheckbox(arreglo, arregloChecked) {
+    tarjetas.innerHTML = '';
+    let arregloFinal = arreglo.filter(event => arregloChecked.includes(event.category.toLowerCase()))
+    console.log(arregloFinal);
+    return arregloFinal
+}
+
+
+//filtro buscar
+function filtrarPorPalabra(arregloEventos, palabraClave) {
+    tarjetas.innerHTML = '';
+    let arregloFiltrado = arregloEventos.filter(evento => evento.name.toLowerCase().includes(palabraClave.toLowerCase()) || evento.description.toLowerCase().includes(palabraClave.toLowerCase()))
+    return arregloFiltrado
 }

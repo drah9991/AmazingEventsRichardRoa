@@ -185,57 +185,55 @@ const data = {
     ],
 };
 let carrusel = document.getElementById("carrusel-principal")
+let eventosFiltrados = data.events; // Mantén un arreglo de eventos filtrados
+
 
 // Llamada a la función
-tarjetas(data.events, carrusel)
-let pruebafuturo = filtroEventsporFecha(data.events, data.currentDate, true)
-console.log(pruebafuturo);
-let pruebapasado = filtroEventsporFecha(data.events, data.currentDate, false)
-console.log(pruebapasado);
+tarjetas(eventosFiltrados, carrusel)
 
-// let pastEvents = filtroPast(data.events, data.currentDate)
-// let upcoEvents = filtroUpc(data.events, data.currentDate)
+let contenedorCheckbox = document.getElementById("contenedorCheckbox")
 
-/*
-function filtroPast(arreglo, fecha) {
-    let newArray = []
-    for (let i = 0; i < arreglo.length; i++) {
-        if (arreglo[i].date < fecha) {
-            newArray.push(arreglo[i])
-        }
-    }
-    return newArray
-}*/
-/*
-function filtroUpc(arreglo, fecha) {
-    let newArray = []
-    for (let i = 0; i < arreglo.length; i++) {
-        if (arreglo[i].date > fecha) {
-            newArray.push(arreglo[i])
-        }
-    }
-    return newArray
-}*/
+let arrayCategory = Array.from(new Set(data.events.map(event => event.category)))
+pintarCheckbox(arrayCategory, contenedorCheckbox)
 
+contenedorCheckbox.addEventListener("change", e => {
+    let checked = Array.from(document.querySelectorAll("input[type=checkbox]:checked")).map(checkbox => checkbox.value.toLowerCase())
+    let nuevoArreglo = filtrarPorCheckbox(data.events, checked)
+    tarjetas(nuevoArreglo, carrusel)
+})
+
+let buscador = document.getElementById("inputBusqueda");
+buscador.addEventListener("keyup", e => {
+    let nuevoArreglo1 = filtrarPorPalabra(data.events, e.target.value)
+    tarjetas(nuevoArreglo1, carrusel)
+})
+
+
+//corregir variables
 function tarjetas(arregloEventos, divp) {
-    for (let i = 0; i < arregloEventos.length; i += 4) {
-        let carruselItem
-        if (i < 4) {
-            carruselItem = document.createElement("div")
-            carruselItem.classList.add("carousel-item", "active")
-        } else {
-            carruselItem = document.createElement("div")
-            carruselItem.classList.add("carousel-item")
-        }
+    //
+    divp.innerHTML = ""
+    if (arregloEventos == 0) {
+        divp.innerHTML = '<div class="col-12 min-vh-50"><h2 class="text-center text-secondary my-5">No hay elementos para mostrar</h2></div>'
+    } else {
+        for (let i = 0; i < arregloEventos.length; i += 4) {
+            let carruselItem
+            if (i < 4) {
+                carruselItem = document.createElement("div")
+                carruselItem.classList.add("carousel-item", "active")
+            } else {
+                carruselItem = document.createElement("div")
+                carruselItem.classList.add("carousel-item")
+            }
 
-        let contenedor = document.createElement("div")
-        contenedor.classList.add("d-flex", "justify-content-around")
+            let contenedor = document.createElement("div")
+            contenedor.classList.add("d-flex", "justify-content-around")
 
-        for (let j = i; j < i + 4; j++) {
-            if (arregloEventos[j] != undefined) {
-                let card = document.createElement("div")
-                card.classList.add("card", "tamanoCard")
-                card.innerHTML = `
+            for (let j = i; j < i + 4; j++) {
+                if (arregloEventos[j] != undefined) {
+                    let card = document.createElement("div")
+                    card.classList.add("card", "tamanoCard")
+                    card.innerHTML = `
                     <img src="${arregloEventos[j].image}" class="card-img-top w-100 h-100" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">${arregloEventos[j].name}</h5>
@@ -247,19 +245,47 @@ function tarjetas(arregloEventos, divp) {
                         <li class="list-group-item">Place: ${arregloEventos[j].place} </li>
                         <li class="list-group-item">Category: ${arregloEventos[j].category} </li>
                         <li class="list-group-item">Price: ${arregloEventos[j].price}</li>
-                        <li class="list-group-item">Capacity: ${arregloEventos[j].capacity}</li>
-                        <li class="list-group-item">Assistance: ${arregloEventos[j].assistance}</li>
                     </ul>
                     <div class="card-body">
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
+                        <a href="details.html?id=${arregloEventos[j]._id}" class="card-link">Details</a>
                     </div>`;
-
-                contenedor.appendChild(card);
+                    contenedor.appendChild(card);
+                }
             }
-        }
 
-        carruselItem.appendChild(contenedor);
-        divp.appendChild(carruselItem);
+            carruselItem.appendChild(contenedor);
+            divp.appendChild(carruselItem);
+        }
     }
 }
+
+function pintarCheckbox(arregloCategory, divC) {
+    tarjetas.innerHTML = '';
+    for (let j = 0; j < arregloCategory.length; j++) {
+        if (arrayCategory[j] != undefined) {
+            let checkbox = document.createElement("div")
+            checkbox.classList.add("form-check", "form-check-inline")
+            checkbox.innerHTML = `
+            <input class="form-check-input" type="checkbox" value="${arregloCategory[j]}" id="${arregloCategory[j]}">
+            <label class="form-check-label" for="${arregloCategory[j]}">${arregloCategory[j]}</label>`;
+            divC.appendChild(checkbox);
+        }
+    }
+
+}
+
+function filtrarPorCheckbox(arreglo, arregloChecked) {
+    tarjetas.innerHTML = '';
+    let arregloFinal = arreglo.filter(event => arregloChecked.includes(event.category.toLowerCase()))
+    console.log(arregloFinal);
+    return arregloFinal
+}
+
+//filtro buscar
+function filtrarPorPalabra(arregloEventos, palabraClave) {
+    tarjetas.innerHTML = '';
+    let arregloFiltrado = arregloEventos.filter(evento => evento.name.toLowerCase().includes(palabraClave.toLowerCase()) || evento.description.toLowerCase().includes(palabraClave.toLowerCase()))
+    return arregloFiltrado
+}
+
+//Filtro por busqueda
