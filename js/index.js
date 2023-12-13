@@ -22,11 +22,4 @@ fetch(variables.url)
         // Aplicamos el handler(filtro) a ambos eventos
         variables.contenedorCheckbox.addEventListener("change", filtro);
         variables.buscador.addEventListener("keyup", filtro);
-        // // Mueve estas funciones dentro del evento "change" del contenedor de checkboxes
-        // variables.contenedorCheckbox.addEventListener("change", () => {
-        //     funciones.filtrarPorCheckbox(data.events, variables.contenedorCheckbox);
-        //     funciones.filtroGeneral(data.events);
-        // });
-
-        console.log(data.events);
     });

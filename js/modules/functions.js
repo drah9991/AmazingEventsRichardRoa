@@ -72,49 +72,39 @@ export function filtrarPorPalabra(arregloEventos, palabraClave) {
     return arregloFiltrado
 }
 
-export function generalStatistics(data) {
-    let listCapacity = largerCapacity(data)
-    let hightPorcentList = [
-        [0],
-        [0],
-        [0]
-    ]
-    let lowPorcentList = [
-        [99],
-        [99],
-        [99]
-    ]
-    for (let i = 0; i < data.events.length; i++) {
-        let assistance = data.events[i].assistance
-        if (assistance == undefined) {
-            continue
-        }
-        let porcent = assistancePorcent(data.events[i])
-        if (porcent > (hightPorcentList[0])[0]) {
-            hightPorcentList[0] = [porcent, data.events[i].name]
-        } else if (porcent > (hightPorcentList[1])[0]) {
-            hightPorcentList[1] = [porcent, data.events[i].name]
-        } else if (porcent > (hightPorcentList[2])[0]) {
-            hightPorcentList[2] = [porcent, data.events[i].name]
-        }
+export function filtrarFechas(array, dates, future) {
+    let nuevoArreglo = []
+    for (let i = 0; i < array.length; i++) {
+        if (future == true) {
+            if (array[i].date > dates) {
+                nuevoArreglo.push(array[i])
+            }
 
-        if (porcent < (lowPorcentList[0])[0]) {
-            lowPorcentList[1] = lowPorcentList[0]
-            lowPorcentList[0] = [porcent, data.events[i].name]
-        } else if (porcent < (lowPorcentList[1])[0]) {
-            lowPorcentList[2] = lowPorcentList[1]
-            lowPorcentList[1] = [porcent, data.events[i].name]
-        } else if (porcent < (lowPorcentList[2])[0]) {
-            lowPorcentList[2] = [porcent, data.events[i].name]
+        } else {
+            if (array[i].date < dates) {
+                nuevoArreglo.push(array[i])
+            }
+
         }
     }
-    hightPorcentList[0][0] = hightPorcentList[0][0] + " % "
-    hightPorcentList[1][0] = hightPorcentList[1][0] + " % "
-    hightPorcentList[2][0] = hightPorcentList[2][0] + " % "
-    lowPorcentList[0][0] = lowPorcentList[0][0] + " % "
-    lowPorcentList[1][0] = lowPorcentList[1][0] + " % "
-    lowPorcentList[2][0] = lowPorcentList[2][0] + " % "
-    let generalStatisticsTable = [hightPorcentList, lowPorcentList, listCapacity]
-    console.log(generalStatisticsTable);
-    drawStats(statistics, generalStatisticsTable, "g")
+    return nuevoArreglo
+}
+
+export function crearFilaEncabezado(texto) {
+    let fila = document.createElement("tr");
+    fila.innerHTML = `<th class="bg-secondary" colspan="4">${texto}</th>`;
+    tablaEstadisticas.appendChild(fila);
+}
+
+export function crearFilaEvento(nombre, asistencia, capacidad) {
+    let fila = document.createElement("tr");
+    fila.innerHTML = `
+        <td>Evento: <b>${nombre}</b></td>
+        <td>Asistencia: <b>${asistencia}%</b></td>
+        <td colspan="2">Capacidad: <b>${capacidad}</b></td>`;
+    variables.tablaEstadisticas.appendChild(fila);
+}
+
+export function calcularPorcentaje(assistance, capacidad) {
+    return Math.floor((Number((assistance / capacidad) * 100)));
 }
